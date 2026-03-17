@@ -55,8 +55,7 @@
             width: 100%;
             max-width: min(44vw, 480px);
             background: var(--cream);
-            min-height: 100vh;
-            overflow-x: hidden;
+            min-height: 100vh; 
             box-shadow: 0 0 6vw rgba(0, 0, 0, .2);
         }
 
@@ -173,13 +172,13 @@
             background-color: #e9e5df;
         }
 
-        /* ── PILL TABS ── */
-        .tabs-container {
-            background: var(--cream);
-            border-bottom: 1px solid var(--border);
+        /* ── PILL TABS ── */ 
+        .sticky-header {
             position: sticky;
             top: 0;
             z-index: 50;
+            background: var(--cream);
+            border-bottom: 1px solid var(--border);
         }
 
         .cat-tabs {
@@ -495,21 +494,16 @@
              
             <img class="hero-logo" src="./logo.webp" alt="Logo">
         </div>
+ 
 
-        <div class="menuContainer">
-            <!-- SEARCH -->
+        <div class="sticky-header">
             <div class="search-bar">
                 <input type="text" class="search-input" id="searchInput" placeholder="Search menu…">
             </div>
-
-            <!-- PILL TABS -->
-            <div class="tabs-container">
-                <div class="cat-tabs" id="catTabs"></div>
-            </div>
-
-            <!-- CONTENT -->
-            <div id="menuContent"></div>
+            <div class="cat-tabs" id="catTabs"></div>
         </div>
+
+        <div id="menuContent"></div> 
 
     </div>
 
