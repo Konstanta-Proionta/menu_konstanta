@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Konstanta</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --cream: #faf8f4;
+            --dark: #1a1a1a;
+            --gold: #c8a96e;
+            --green: #4a7c59;
+            --light-gray: #f0ede8;
+            --mid-gray: #9a9490;
+            --border: #e5e0d8;
+            --accent: #c0392b;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: #e8e4de;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app {
+            width: 100%;
+            max-width: min(44vw, 480px);
+            background: var(--cream);
+            min-height: 100vh;
+            overflow-x: hidden;
+            box-shadow: 0 0 6vw rgba(0, 0, 0, .2);
+        }
+
+        @media(max-width:700px) {
+            .app {
+                max-width: 100vw
+            }
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            height: 25rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: url("./logoback.webp");
+            background-position: center;
+            background-size: cover;
+        }
+  
+        @media(max-width:700px) { 
+
+        }
+
+        .hero-logo {
+            width: 7rem;
+            position: relative;
+            height: 6rem; 
+            background: white;
+            padding: 1vh;
+            border-radius: 0.5rem;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: 100%; 
+            transition: transform .6s;
+        }
+
+        .hero:hover .hero-img {
+            transform: scale(1.03);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 70%, rgb(0 0 0 / 50%));
+        }
+ 
+        .hero-title {
+            position: relative; 
+            font-size: clamp(22px, 3.2vw, 36px);
+            font-weight: 700;
+            color: white;
+            letter-spacing: -.03em;
+            text-shadow: 0 .2vh 1.2vw rgba(0, 0, 0, .3);
+        }
+
+        .social-bar {
+            position: relative; 
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .social-icon {  
+            width: 3rem;
+            height: 3rem;
+            backdrop-filter: blur(8px);
+            background-color: rgb(255 255 255 / 50%);
+            border-radius: 1.9vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background .2s, transform .2s;
+            border: 1px solid rgba(255, 255, 255, .25);
+        }
+  
+        .social-icon svg {
+            width: 50%;
+            height: 50%;
+            fill: white;
+        }
+
+        /* ── SEARCH ── */
+        .search-bar {
+            padding: 1.2vh 2vw .4vh;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--light-gray);
+            border: none;
+            border-radius: 1.2vw;
+            padding: 1.1vh 2vw 1.1vh max(28px, 4vw); 
+            font-size: clamp(12px, 1.3vw, 14px);
+            color: var(--dark);
+            outline: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a9490' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: max(10px, 1.4vw) center;
+            background-size: max(14px, 1.4vw);
+        }
+
+        .search-input::placeholder {
+            color: var(--mid-gray);
+        }
+
+        .search-input:focus {
+            background-color: #e9e5df;
+        }
+
+        /* ── PILL TABS ── */
+        .tabs-container {
+            background: var(--cream);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .cat-tabs {
+            display: flex;
+            align-items: center;
+            padding: 1.2vh 2vw;
+            gap: 1vw;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .cat-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-tab {
+            padding: .7vh 1.6vw;
+            border-radius: 10vw; 
+            font-size: clamp(12px, 1.3vw, 14px);
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            flex-shrink: 0;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--mid-gray);
+            transition: background .18s, color .18s, border-color .18s;
+        }
+
+        .cat-tab:hover {
+            border-color: #aaa;
+            color: var(--dark);
+        }
+
+        .cat-tab.active {
+            background: var(--dark);
+            color: white;
+            border-color: var(--dark);
+        }
+
+        /* ── MENU SECTION ── */
+        .menu-section {
+            animation: fadeIn .3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(1vh)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .section-title { 
+            font-size: clamp(18px, 2.4vw, 28px);
+            font-weight: 700;
+            color: var(--dark);
+            padding: 2vh 2vw 1.2vh;
+        }
+
+        /* ── 2-COL GRID ── */
+        .item-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vw;
+            padding: 0 2vw 8vh;
+        }
+
+        .item-cell {
+            background: white;
+            border-radius: max(12px, 1.6vw);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform .18s, box-shadow .18s;
+        }
+
+        .item-cell:hover {
+            transform: translateY(-.4vh);
+            box-shadow: 0 .8vh 2.4vw rgba(0, 0, 0, .1);
+        }
+
+        .item-thumb {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            display: block;
+            background: var(--light-gray);
+        }
+
+        .item-cell-body {
+            padding: 1.2vh 1.4vw 1.4vh;
+        }
+
+        .item-cell-name {
+            font-size: clamp(12px, 1.3vw, 14px);
+            font-weight: 600;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+
+        .empty-msg {
+            padding: 3vh 2vw 6vh;
+            color: var(--mid-gray);
+            font-size: clamp(12px, 1.2vw, 14px);
+        }
+
+        /* ── DETAIL SHEET ── */
+        .sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            z-index: 300;
+        }
+
+        .sheet-overlay.open {
+            display: flex;
+        }
+
+        .sheet {
+            background: var(--cream);
+            border-radius: max(16px, 2.4vw) max(16px, 2.4vw) 0 0;
+            width: 100%;
+            max-width: min(44vw, 480px);
+            max-height: 88vh;
+            overflow-y: auto;
+            animation: slideUp .35s cubic-bezier(.34, 1.2, .64, 1);
+            padding-bottom: 5vh;
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            will-change: transform;
+        }
+
+        @media(max-width:700px) {
+            .sheet {
+                max-width: 100vw
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%)
+            }
+
+            to {
+                transform: translateY(0)
+            }
+        }
+
+        .sheet-handle {
+            width: max(36px, 4vw);
+            height: .5vh;
+            min-height: 4px;
+            background: var(--border);
+            border-radius: 4px;
+            margin: 1.2vh auto 0;
+            padding: 0.3vh 1vh;
+            margin-bottom: 1vh;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .sheet-handle:active {
+            cursor: grabbing;
+        }
+
+        /* Detail hero image */
+        .detail-img {
+            width: 100%;
+            height: 28vh;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 0;
+        }
+
+        /* Detail body */
+        .detail-body {
+            padding: 2vh 2vw 0;
+        }
+
+        /* Title row */
+        .detail-title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1vw;
+            margin-bottom: .4vh;
+        }
+
+        .detail-title { 
+            font-size: clamp(18px, 2.2vw, 26px);
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.2;
+            flex: 1;
+        }
+
+        .detail-close {
+            width: max(28px, 3vw);
+            height: max(28px, 3vw);
+            max-width: 34px;
+            max-height: 34px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(13px, 1.4vw, 17px);
+            flex-shrink: 0;
+            transition: background .2s;
+        }
+
+        .detail-close:hover {
+            background: var(--border);
+        }
+
+        /* Code line */
+        .detail-code {
+            font-size: clamp(10px, 1.1vw, 12px);
+            color: var(--mid-gray);
+            margin-bottom: 2vh;
+            display: flex;
+            align-items: center;
+            gap: .4vw;
+        }
+
+        .detail-code strong {
+            color: var(--dark);
+        }
+
+        /* Info boxes row — dashed border, cream bg, like reference */
+        .info-boxes-row {
+            display: flex;
+            gap: 1.4vw;
+            flex-wrap: wrap;
+            margin-bottom: 1.8vh;
+        }
+
+        .info-box {
+            flex: 1 1 auto;
+            min-width: 0;
+            border: 1.5px dashed #c8b89a;
+            border-radius: max(6px, .8vw);
+            background: #fdf8f0;
+            padding: 1.1vh 1.2vw;
+            font-size: clamp(11px, 1.15vw, 13px);
+            color: var(--dark);
+            line-height: 1.4;
+        }
+
+        .info-box strong {
+            font-weight: 700;
+        }
+
+        /* Wide info box (spans full row) */
+        .info-box-wide {
+            width: 100%;
+            border: 1.5px dashed #c8b89a;
+            border-radius: max(6px, .8vw);
+            background: #fdf8f0;
+            padding: 1.2vh 1.4vw;
+            font-size: clamp(11px, 1.15vw, 13px);
+            color: var(--dark);
+            line-height: 1.6;
+            margin-bottom: 1.4vh;
+        }
+
+        .info-box-wide strong {
+            font-weight: 700;
+        }
+
+        .detail-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1.8vh 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+
+        <!-- HERO -->
+        <div class="hero">  
+            <div class="hero-overlay"></div> 
+             
+            <div class="social-bar">
+                <div class="social-icon" onclick="window.open('https://www.instagram.com/konstanta_proionta_zumis/','_blank')">
+                    <svg height="512px" viewBox="0 0 512 512" width="512px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="w-7 h-7"><g id="_x36_2-instagram"><g><linearGradient gradientUnits="userSpaceOnUse" id="SVGID_1_" x1="65.9038" x2="446.3573" y1="444.4766" y2="64.0231"><stop offset="0" style="stop-color: rgb(255, 193, 7);"></stop><stop offset="0.2211" style="stop-color: rgb(249, 141, 28);"></stop><stop offset="0.5137" style="stop-color: rgb(241, 66, 59);"></stop><stop offset="0.8329" style="stop-color: rgb(185, 48, 136);"></stop><stop offset="0.9944" style="stop-color: rgb(156, 39, 176);"></stop></linearGradient><path d="M343.193,22H168.32C87.854,22,23,86.863,23,166.958v174.079    C23,421.137,87.854,487,168.32,487h174.873C423.66,487,490,421.137,490,341.037V166.958C490,86.863,423.66,22,343.193,22z     M446,341.037C446,397.025,399.438,443,343.193,443H168.32C112.071,443,66,397.025,66,341.037V166.958    C66,110.973,112.071,65,168.32,65h174.873C399.438,65,446,110.973,446,166.958V341.037z" style="fill: url(&quot;#SVGID_1_&quot;);"></path><linearGradient gradientUnits="userSpaceOnUse" id="SVGID_2_" x1="173.5107" x2="338.0032" y1="336.2451" y2="171.7527"><stop offset="0" style="stop-color: rgb(255, 193, 7);"></stop><stop offset="0.2211" style="stop-color: rgb(249, 141, 28);"></stop><stop offset="0.5137" style="stop-color: rgb(241, 66, 59);"></stop><stop offset="0.8329" style="stop-color: rgb(185, 48, 136);"></stop><stop offset="0.9944" style="stop-color: rgb(156, 39, 176);"></stop></linearGradient><path d="M255.756,137.947c-64.382,0-116.581,51.961-116.581,116.055    c0,64.085,52.199,116.045,116.581,116.045c64.383,0,116.58-51.96,116.58-116.045C372.336,189.908,320.139,137.947,255.756,137.947    z M255.756,326.531c-40.164,0-72.86-32.551-72.86-72.529c0-40.016,32.696-72.534,72.86-72.534    c40.162,0,72.861,32.519,72.861,72.534C328.617,293.98,295.918,326.531,255.756,326.531z" style="fill: url(&quot;#SVGID_2_&quot;);"></path><linearGradient gradientUnits="userSpaceOnUse" id="SVGID_3_" x1="370.1182" x2="392.037" y1="140.2031" y2="118.2843"><stop offset="0" style="stop-color: rgb(255, 193, 7);"></stop><stop offset="0.2211" style="stop-color: rgb(249, 141, 28);"></stop><stop offset="0.5137" style="stop-color: rgb(241, 66, 59);"></stop><stop offset="0.8329" style="stop-color: rgb(185, 48, 136);"></stop><stop offset="0.9944" style="stop-color: rgb(156, 39, 176);"></stop></linearGradient><path d="M381.08,113.779c-8.581,0-15.538,6.924-15.538,15.463c0,8.54,6.957,15.467,15.538,15.467    c8.573,0,15.532-6.927,15.532-15.467C396.612,120.703,389.653,113.779,381.08,113.779z" style="fill: url(&quot;#SVGID_3_&quot;);"></path></g></g><g id="Layer_1"></g></svg>
+                </div>
+                <div class="social-icon" onclick="window.open('https://www.facebook.com/konstanta.proionta.zumis','_blank')">
+                    <svg enable-background="new 0 0 128 128" id="Social_Icons" viewBox="0 0 128 128" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="w-7 h-7"><g id="_x31__stroke"><g id="Facebook_1_"><rect fill="none" height="128" width="128"></rect><path clip-rule="evenodd" d="M68.369,128H7.065C3.162,128,0,124.836,0,120.935    V7.065C0,3.162,3.162,0,7.065,0h113.871C124.837,0,128,3.162,128,7.065v113.87c0,3.902-3.163,7.065-7.064,7.065H88.318V78.431    h16.638l2.491-19.318H88.318V46.78c0-5.593,1.553-9.404,9.573-9.404l10.229-0.004V20.094c-1.769-0.235-7.841-0.761-14.906-0.761    c-14.749,0-24.846,9.003-24.846,25.535v14.246H51.688v19.318h16.681V128z" fill="#4460A0" fill-rule="evenodd" id="Facebook"></path></g></g></svg>
+                </div>
+                <div class="social-icon" onclick="window.open('https://maps.app.goo.gl/Fzxwxcza2j4mgtQK7','_blank')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px" class="w-7 h-7"><path fill="#48b564" d="M35.76,26.36h0.01c0,0-3.77,5.53-6.94,9.64c-2.74,3.55-3.54,6.59-3.77,8.06 C24.97,44.6,24.53,45,24,45s-0.97-0.4-1.06-0.94c-0.23-1.47-1.03-4.51-3.77-8.06c-0.42-0.55-0.85-1.12-1.28-1.7L28.24,22l8.33-9.88 C37.49,14.05,38,16.21,38,18.5C38,21.4,37.17,24.09,35.76,26.36z"></path><path fill="#fcc60e" d="M28.24,22L17.89,34.3c-2.82-3.78-5.66-7.94-5.66-7.94h0.01c-0.3-0.48-0.57-0.97-0.8-1.48L19.76,15 c-0.79,0.95-1.26,2.17-1.26,3.5c0,3.04,2.46,5.5,5.5,5.5C25.71,24,27.24,23.22,28.24,22z"></path><path fill="#2c85eb" d="M28.4,4.74l-8.57,10.18L13.27,9.2C15.83,6.02,19.69,4,24,4C25.54,4,27.02,4.26,28.4,4.74z"></path><path fill="#ed5748" d="M19.83,14.92L19.76,15l-8.32,9.88C10.52,22.95,10,20.79,10,18.5c0-3.54,1.23-6.79,3.27-9.3 L19.83,14.92z"></path><path fill="#5695f6" d="M28.24,22c0.79-0.95,1.26-2.17,1.26-3.5c0-3.04-2.46-5.5-5.5-5.5c-1.71,0-3.24,0.78-4.24,2L28.4,4.74 c3.59,1.22,6.53,3.91,8.17,7.38L28.24,22z"></path></svg>
+                </div> 
+                <div class="social-icon" onclick="window.open('https://konstanta.gr','_blank')">
+                    <svg id="Layer_1" viewBox="0 0 128 128" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="w-7 h-7"><g><path d="M64,126c34.2,0,62-27.8,62-62S98.2,2,64,2S2,29.8,2,64S29.8,126,64,126z M16,88.7l25.2-0.2c2.8,10.1,7.5,19.9,13.9,28.7   C38,114.4,23.7,103.5,16,88.7z M47.6,47H79c2.3,11,2.3,22.3,0.2,33.3l-31.6,0.2C45.3,69.4,45.3,58,47.6,47z M63.3,114.9   c-6.3-8.1-10.9-17-13.7-26.4l27.5-0.2C74.2,97.7,69.6,106.7,63.3,114.9z M71.3,117.5c6.6-9,11.3-18.9,14.1-29.3l26.9-0.2   C104.5,103.7,89.3,115,71.3,117.5z M118,64c0,5.6-0.9,11-2.4,16l-28.3,0.2c2-11,1.9-22.2-0.2-33.2h28.1C117,52.3,118,58.1,118,64z    M111.8,39H85.2c-2.9-10-7.5-19.7-13.9-28.5C89,12.9,103.9,23.8,111.8,39z M76.9,39H49.7c2.9-9.2,7.4-17.9,13.6-25.9   C69.5,21.1,74,29.8,76.9,39z M55.1,10.8C48.8,19.5,44.2,29,41.4,39H16.2C23.9,24.3,38.1,13.6,55.1,10.8z M39.5,47   c-2.1,11.1-2.1,22.4-0.1,33.5l-26.7,0.2C10.9,75.4,10,69.8,10,64c0-5.9,1-11.7,2.8-17H39.5z"></path></g></svg>
+                </div>
+            </div>
+ 
+            <div class="hero-title">ΑΦΟΙ Δ.ΚΩΝΣΤΑΝΤΑ Ε.Ε.</div>
+             
+            <img class="hero-logo" src="./logo.webp" alt="Logo">
+        </div>
+
+        <div class="menuContainer">
+            <!-- SEARCH -->
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search menu…">
+            </div>
+
+            <!-- PILL TABS -->
+            <div class="tabs-container">
+                <div class="cat-tabs" id="catTabs"></div>
+            </div>
+
+            <!-- CONTENT -->
+            <div id="menuContent"></div>
+        </div>
+
+    </div>
+
+    <!-- DETAIL SHEET -->
+    <div class="sheet-overlay" id="detailSheet">
+        <div class="sheet" id="sheetInner">
+            <div class="sheet-handle"></div>
+            <img class="detail-img" id="detailImg" src="" alt="">
+            <div class="detail-body">
+                <div class="detail-title-row">
+                    <div class="detail-title" id="detailTitle"></div>
+                    <button class="detail-close" id="detailClose">✕</button>
+                </div>
+                <div class="detail-code" id="detailCode"></div>
+                <div class="detail-divider"></div>
+                <!-- Row 1: small info boxes -->
+                <div class="info-boxes-row" id="infoBoxesRow"></div>
+                <!-- Wide boxes -->
+                <div id="wideBoxes"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+
+            const menuData = {
+                'ΚΟΥΡΟΥ': [
+                    {
+                        name: 'Κουρού Τυρί Ατομικό',
+                        img: './photos/kourou/kou_001.webp',
+                        code: 'ΚΟΥ-001',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος τέμ', value: '210γρ' },
+                            { label: 'Τέμ. ανά κιβώτιο', value: '40' },
+                            { label: 'Απόψυξη', value: '40 λεπτά' },
+                            { label: 'Στόφα', value: '30 λεπτά' },
+                        ],
+                        baking: '175-180 βαθμοί για 25-30 ​​λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    }, 
+                    {
+                        name: 'Κουρού Τυρί Ολικής Ατομικό',
+                        img: './photos/kourou/kou_006.webp',
+                        code: 'ΚΟΥ-006',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος τέμ', value: '210γρ' },
+                            { label: 'Τέμ. ανά κιβώτιο', value: '40' },
+                            { label: 'Απόψυξη', value: '40 λεπτά' },
+                            { label: 'Στόφα', value: '40 λεπτά' },
+                        ],
+                        baking: '175-180 βαθμοί για 25-30 ​​λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Κουρού Τυρί mini',
+                        img: './photos/kourou/kou_003.webp',
+                        code: 'ΚΟΥ-003',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος κιβ', value: '7 κιλά' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Κουρού Ολικής Τυρί mini',
+                        img: './photos/kourou/kou_005.webp',
+                        code: 'ΚΟΥ-005',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος κιβ', value: '7 κιλά' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Κουρού Λουκάνικο mini',
+                        img: './photos/kourou/kou_004.webp',
+                        code: 'ΚΟΥ-004',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος κιβ', value: '7 κιλά' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Μεζεδάκι Κασέρι mini',
+                        img: './photos/kourou/mz_002.webp',
+                        code: 'ΜΖ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Μεζεδάκι Ζαμπόν-Κασέρι mini',
+                        img: './photos/kourou/mz_007.webp',
+                        code: 'ΜΖ-007',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Κουρού Κοτόπουλο mini',
+                        img: './photos/kourou/mz_009.webp',
+                        code: 'MZ-009',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Κουρού Κρέμα Τυριού',
+                        img: './photos/kourou/kou_007.webp',
+                        code: 'ΚΟΥ-007',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΟΥΡΟΥ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+                'ΦΛΟΓΕΡΑΚΙΑ': [
+                    {
+                        name: 'Φλογεράκι Τυρί',
+                        img: './photos/flogerakia/sou_020.webp',
+                        code: 'SOU-020',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Γαλοπούλα Ανθότυρο Oλικής',
+                        img: './photos/flogerakia/sou_021.webp',
+                        code: 'SOU-021',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Τυρί Κρέμα',
+                        img: './photos/flogerakia/sou_023.webp',
+                        code: 'SOU-023',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Τυρί Κρέμα & Γαλοπούλα',
+                        img: './photos/flogerakia/sou_019.webp',
+                        code: 'SOU-019',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Tέσσερα Τυριά',
+                        img: './photos/flogerakia/sou_025.webp',
+                        code: 'SOU-025',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Tσιγγανάκι',
+                        img: './photos/flogerakia/sou_028.webp',
+                        code: 'SOU-028',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Μπουγατσίνι Κρέμα',
+                        img: './photos/flogerakia/sou_022.webp',
+                        code: 'SOU-022',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Πατάτα',
+                        img: './photos/flogerakia/sou_018.webp',
+                        code: 'SOU-018',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '25 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Mπουγατσίνι',
+                        img: './photos/flogerakia/sou_024.webp',
+                        code: 'SOU-024',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '25 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Φλογεράκι Tαχίνι',
+                        img: './photos/flogerakia/tax_004.webp',
+                        code: 'TAX-004',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΦΛΟΓΕΡΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '25 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ], 
+                'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ': [
+                    {
+                        name: 'Σφολιάτα Τυρί Τρίγωνη',
+                        img: './photos/sfoliates/sf_001.webp',
+                        code: 'ΣΦ-001',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '210γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιάτα Ζαμπόν Γκούντα σάλτσα',
+                        img: './photos/sfoliates/sf_002.webp',
+                        code: 'ΣΦ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '230γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιάτα Λουκάνικο σάλτσα',
+                        img: './photos/sfoliates/sf_003.webp',
+                        code: 'ΣΦ-003',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '200γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιάτα Λουκάνικο Έξτρα',
+                        img: './photos/sfoliates/sf_004.webp',
+                        code: 'ΣΦ-004',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '250γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιάτα Γκούντα',
+                        img: './photos/sfoliates/sf_005.webp',
+                        code: 'ΣΦ-005',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '210γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιάτα Τσιγγάνα',
+                        img: './photos/sfoliates/sf_006.webp',
+                        code: 'ΣΦ-006',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '210γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιάτα Γραβιέρα',
+                        img: './photos/sfoliates/sf_007.webp',
+                        code: 'ΣΦ-007',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '220γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιάτα Γραβιέρα Μπριζόλα',
+                        img: './photos/sfoliates/sf_011.webp',
+                        code: 'ΣΦ-011',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τέμ', value: '230γρ' }, 
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προίοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+                'ΣΦΟΛΙΑΤΑΚΙΑ ΜΙΝΙ': [
+                    {
+                        name: 'Σφολιατάκι Τυρί Τριγωνάκι',
+                        img: './photos/sfoliatakia/sf_0010.webp',
+                        code: 'ΣΦ-0010',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 15-20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιατάκι Λουκάνικο σάλτσα',
+                        img: './photos/sfoliatakia/sf_0020.webp',
+                        code: 'ΣΦ-0020',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 15-20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιατάκι Ζαμπόν Γκούντα',
+                        img: './photos/sfoliatakia/sf_0030.webp',
+                        code: 'ΣΦ-0030',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 15-20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιατάκι Γραβιέρα Νάξου & Μπριζόλα',
+                        img: './photos/sfoliatakia/sf_013.webp',
+                        code: 'ΣΦ-013',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 15-20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιατίνι Τυρί',
+                        img: './photos/sfoliatakia/sf_016.webp',
+                        code: 'ΣΦ-016',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '5 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 15-20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιατίνι Ζαμπόν Γκούντα',
+                        img: './photos/sfoliatakia/sf_015.webp',
+                        code: 'ΣΦ-015',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '5 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 15-20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    {
+                        name: 'Σφολιατάκι Μήλο Σταφίδα',
+                        img: './photos/sfoliatakia/sf_008.webp',
+                        code: 'ΣΦ-008',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Σφολιατάκι Μανιτάρι',
+                        img: './photos/sfoliatakia/sf_009.webp',
+                        code: 'ΣΦ-009',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΦΟΛΙΑΤΑΚΙΑ' },
+                            { label: 'Βάρος κιβ', value: '6 κιλά' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+
+                'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ': [
+                    { 
+                        name: 'Χωριάτικη Τυρί 10 τεμάχια',
+                        img: './photos/xwriatikes/xwr_001.webp',
+                        code: 'ΧΩΡ-001',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '185 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Σπανάκι Τυρί 10 τεμάχια',
+                        img: './photos/xwriatikes/xwr_002.webp',
+                        code: 'ΧΩΡ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '185 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Τυρί 8 τεμάχια',
+                        img: './photos/xwriatikes/mxr_008.webp',
+                        code: 'ΜΧΡ-008',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '185 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Σπανάκι Τυρί 8 τεμάχια',
+                        img: './photos/xwriatikes/mxr_007.webp',
+                        code: 'ΜΧΡ-007',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2000γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Koτόπουλο 8 τεμάχια',
+                        img: './photos/xwriatikes/mxr_010.webp',
+                        code: 'ΜΧΡ-010',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2000γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Πράσσο Τυρί 8 τεμάχια',
+                        img: './photos/xwriatikes/mxr_011.webp',
+                        code: 'ΜΧΡ-011',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2000γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Πράσσο 8 τεμάχια',
+                        img: './photos/xwriatikes/mxr_014.webp',
+                        code: 'ΜΧΡ-014',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2000γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Σπανάκι 8 τεμάχια',
+                        img: './photos/xwriatikes/mxr_009.webp',
+                        code: 'ΜΧΡ-009',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2000γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Σπανάκι 10 τεμάχια',
+                        img: './photos/xwriatikes/xwr_018.webp',
+                        code: 'ΧΩΡ-018',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '2000γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ατμό).',
+                    },
+                ],
+
+                'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ': [
+                    { 
+                        name: 'Χωριάτικη Τυρί 30 τεμάχια',
+                        img: './photos/xwriatikes_mini/xwr_009.webp',
+                        code: 'ΧΩΡ-009',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος στα σημάδια που έχει και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ψήσιμο).',
+                    },
+                    { 
+                        name: 'Σπανάκι Τυρί 30 τεμάχια',
+                        img: './photos/xwriatikes_mini/xwr_010.webp',
+                        code: 'ΧΩΡ-010',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος στα σημάδια που έχει και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ψήσιμο).',
+                    },
+                    { 
+                        name: 'Χωριάτικη Πράσσο Τυρί 30 τεμάχια',
+                        img: './photos/xwriatikes_mini/xwr_013.webp',
+                        code: 'ΧΩΡ-013',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος στα σημάδια που έχει και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ψήσιμο).',
+                    },
+                    {
+                        name: 'Χωριάτικη Κοτόπουλο 30 τεμάχια',
+                        img: './photos/xwriatikes_mini/xwr_020.webp',
+                        code: 'ΧΩΡ-020',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος στα σημάδια που έχει και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ψήσιμο).',
+                    },
+                    {
+                        name: 'Χωριάτικη Σπανάκι 30 τεμάχια',
+                        img: './photos/xwriatikes_mini/xwr_019.webp',
+                        code: 'ΧΩΡ-019',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος στα σημάδια που έχει και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ψήσιμο).',
+                    },
+                    {
+                        name: 'Χωριάτικη Κολοκύθι 30 τεμάχια',
+                        img: './photos/xwriatikes_mini/xwr_012.webp',
+                        code: 'ΧΩΡ-012',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος στα σημάδια που έχει και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ψήσιμο).',
+                    },
+                    {
+                        name: 'Χωριάτικη Πράσσο 30 τεμάχια',
+                        img: './photos/xwriatikes_mini/xwr_014.webp',
+                        code: 'ΧΩΡ-014',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΧΩΡΙΑΤΙΚΕΣ ΤΑΨΙ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '2150γρ-2200γρ' }, 
+                            { label: 'Απόψυξη', value: '40 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 50-60 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένο ταψί. Χαράζουμε την πίτα σε βάθος στα σημάδια που έχει και ψήνουμε σε προθερμασμένο φούρνο( προαιρετικά με ψήσιμο).',
+                    },
+                ],
+            
+                'ΑΡΤΟΣΚΕΥΑΣΜΑΤΑ': [
+                    { 
+                        name: 'Koυλούρι Θεσσαλονίκης ίσιο (κατεψυγμένο)',
+                        img: './photos/artoskeuasmata/art_032.webp',
+                        code: 'ΑΡΤ-032',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΑΡΤΟΣΚΕΥΑΣΜΑΤΑ' },
+                            { label: 'Βάρος τεμ', value: '110γρ-120γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '60' },
+                            { label: 'Απόψυξη', value: '25 λεπτά' },
+                            { label: 'Στόφα', value: '20-30 λεπτά' },
+                        ],
+                        baking: '175 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο με ατμό.',
+                    },
+                    { 
+                        name: 'Koυλούρι Θεσσαλονίκης ίσιο ολικής (κατεψυγμένο)',
+                        img: './photos/artoskeuasmata/art_034.webp',
+                        code: 'ΑΡΤ-034',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΑΡΤΟΣΚΕΥΑΣΜΑΤΑ' },
+                            { label: 'Βάρος τεμ', value: '110γρ-120γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '50' },
+                            { label: 'Απόψυξη', value: '25 λεπτά' },
+                            { label: 'Στόφα', value: '20-30 λεπτά' },
+                        ],
+                        baking: '175 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο με ατμό.',
+                    },
+                    { 
+                        name: 'Koυλούρι Θεσσαλονίκης ίσιο πολύσπορο (κατεψυγμένο)',
+                        img: './photos/artoskeuasmata/art_061.webp',
+                        code: 'ΑΡΤ-061',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΑΡΤΟΣΚΕΥΑΣΜΑΤΑ' },
+                            { label: 'Βάρος τεμ', value: '110γρ-120γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '50' },
+                            { label: 'Απόψυξη', value: '25 λεπτά' },
+                            { label: 'Στόφα', value: '20-30 λεπτά' },
+                        ],
+                        baking: '175 βαθμούς για 20-25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο με ατμό.',
+                    },
+                    { 
+                        name: 'Ελαιόψωμο (προψημένο)',
+                        img: './photos/artoskeuasmata/art_064.webp',
+                        code: 'ΑΡΤ-064',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΑΡΤΟΣΚΕΥΑΣΜΑΤΑ' },
+                            { label: 'Βάρος τεμ', value: '140γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '20' },
+                            { label: 'Απόψυξη', value: '15 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 8-10 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Τυρόψωμο (προψημένο)',
+                        img: './photos/artoskeuasmata/art_065.webp',
+                        code: 'ΑΡΤ-065',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΑΡΤΟΣΚΕΥΑΣΜΑΤΑ' },
+                            { label: 'Βάρος τεμ', value: '140γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '20' },
+                            { label: 'Απόψυξη', value: '15 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 8-10 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Κουλούρι τυρί στρογγυλό',
+                        img: './photos/artoskeuasmata/gem_044.webp',
+                        code: 'ΓΕΜ-044',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΑΡΤΟΣΚΕΥΑΣΜΑΤΑ' },
+                            { label: 'Βάρος τεμ', value: '120γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                            { label: 'Στόφα', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+
+                'ΜΠΡΙΟΣΙΝΙΑ ΑΤΟΜΙΚΑ': [
+                    { 
+                        name: 'Γαλοπούλα Ανθότυρο ολικής',
+                        img: './photos/mpriosinia_atomika/mpo_007.webp',
+                        code: 'ΜΠΟ-007',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΑΤΟΜΙΚΑ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Παραδοσιακό τυρί, ντομάτα',
+                        img: './photos/mpriosinia_atomika/mpo_010.webp',
+                        code: 'ΜΠΟ-010',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΑΤΟΜΙΚΑ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: '5 Τυριά',
+                        img: './photos/mpriosinia_atomika/mpo_014.webp',
+                        code: 'ΜΠΟ-014',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΑΤΟΜΙΚΑ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '40 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '170 βαθμούς για 35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Διπλό Λουκάνικο',
+                        img: './photos/mpriosinia_atomika/mpo_013.webp',
+                        code: 'ΜΠΟ-013',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΑΤΟΜΙΚΑ' },
+                            { label: 'Βάρος τεμ', value: '240γρ-260γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '35' },
+                            { label: 'Απόψυξη', value: '40 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '170 βαθμούς για 35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Παραδοσιακό πατάτα, ντομάτα, ελιά',
+                        img: './photos/mpriosinia_atomika/mpo_011.webp',
+                        code: 'ΜΠΟ-011',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΑΤΟΜΙΚΑ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Ταχινόπιτα',
+                        img: './photos/mpriosinia_atomika/tax_003.webp',
+                        code: 'ΤΑΧ-003',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΑΤΟΜΙΚΑ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' },
+                            { label: 'Τεμ. ανά κιβώτιο', value: '35' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' },
+                            { label: 'Στόφα', value: '25 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+
+                'ΜΠΡΙΟΣΙΝΙΑ ΜΙΝΙ': [
+                    { 
+                        name: 'Διπλό Λουκάνικο',
+                        img: './photos/mpriosinia_mini/rol_004.webp',
+                        code: 'ΡΟΛ-004',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '60γρ-65γρ' },
+                            { label: 'Βαρος', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' },
+                            { label: 'Στόφα', value: '15 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Πατάτα Πράσσο',
+                        img: './photos/mpriosinia_mini/rol_052.webp',
+                        code: 'ΡΟΛ-052',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣΙΝΙΑ ΜΙΝΙ' },
+                            { label: 'Βάρος τεμ', value: '55γρ-60γρ' },
+                            { label: 'Βαρος', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' },
+                            { label: 'Στόφα', value: '15 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 25 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+ 
+                'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ': [
+                    { 
+                        name: 'Ζαμπόν Γκούντα',
+                        img: './photos/sarikopites_atomikes/s_002.webp',
+                        code: 'Σ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Γκούντα',
+                        img: './photos/sarikopites_atomikes/s_004.webp',
+                        code: 'Σ-004',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Λουκάνικο Γκούντα',
+                        img: './photos/sarikopites_atomikes/s_003.webp',
+                        code: 'Σ-003',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Κουλούρα Τυρί κρέμα',
+                        img: './photos/sarikopites_atomikes/sou_013.webp',
+                        code: 'ΣΟΥ-013',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Κουλούρα Τυρί κρέμα & Γαλοπούλα',
+                        img: './photos/sarikopites_atomikes/sou_012.webp',
+                        code: 'ΣΟΥ-012',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '210γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Κοτόπουλο Στριφτή',
+                        img: './photos/sarikopites_atomikes/s_020.webp',
+                        code: 'Σ-020',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Τυρί Στριφτή',
+                        img: './photos/sarikopites_atomikes/sx_001.webp',
+                        code: 'ΣΧ-001',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30-35 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Σπανάκι Tυρί Στριφτή',
+                        img: './photos/sarikopites_atomikes/sx_002.webp',
+                        code: 'ΣΧ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Σπανάκι Στριφτή',
+                        img: './photos/sarikopites_atomikes/s_014.webp',
+                        code: 'Σ-014',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Πατάτα Στριφτή',
+                        img: './photos/sarikopites_atomikes/s_013.webp',
+                        code: 'Σ-013',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Πράσσο Στριφτή',
+                        img: './photos/sarikopites_atomikes/s_018.webp',
+                        code: 'Σ-018',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΕΣ ΑΤΟΜΙΚΕΣ' },
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 30 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+
+                'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ': [
+                    { 
+                        name: 'Τυρί',
+                        img: './photos/sarikopitakia_mini/s_007.webp',
+                        code: 'Σ-007',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Ζαμπόν Γκούντα',
+                        img: './photos/sarikopitakia_mini/s_008.webp',
+                        code: 'Σ-008',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Λουκάνικο',
+                        img: './photos/sarikopitakia_mini/s_009.webp',
+                        code: 'Σ-009',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Γκούντα',
+                        img: './photos/sarikopitakia_mini/s_010.webp',
+                        code: 'Σ-010',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Σπανάκι Τυρί',
+                        img: './photos/sarikopitakia_mini/s_011.webp',
+                        code: 'Σ-011',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Κοτόπουλο',
+                        img: './photos/sarikopitakia_mini/s_021.webp',
+                        code: 'Σ-021',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Λαχανικών',
+                        img: './photos/sarikopitakia_mini/s_016.webp',
+                        code: 'Σ-016',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Σπανάκι',
+                        img: './photos/sarikopitakia_mini/s_015.webp',
+                        code: 'Σ-015',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΣΑΡΙΚΟΠΙΤΑΚΙΑ ΜΙΝΙ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' },
+                        ],
+                        baking: '180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+
+                'ΜΠΡΙΟΣ ΑΤΟΜΙΚΟ': [
+                    { 
+                        name: 'Καλτσόνε',
+                        img: './photos/brioche_atomiko/kal_002.webp',
+                        code: 'ΚΑΛ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣ ΑΤΟΜΙΚΟ' }, 
+                            { label: 'Βάρος τεμ', value: '220γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                            { label: 'Στόφα', value: '25 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 12-15 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Πεϊνιρλί',
+                        img: './photos/brioche_atomiko/pei_004.webp',
+                        code: 'ΠΕΙ-004',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣ ΑΤΟΜΙΚΟ' }, 
+                            { label: 'Βάρος τεμ', value: '240γρ' }, 
+                            { label: 'Τεμ. ανά κιβώτιο', value: '30' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                            { label: 'Στόφα', value: '25 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 12-15 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+
+                'ΜΠΡΙΟΣ ΜΙΝΙ': [
+                    { 
+                        name: 'Μπουρεκάκι Πατάτα Ελιά',
+                        img: './photos/brioche_mini/mpo_003.webp',
+                        code: 'ΜΠΟ-003',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣ ΑΤΟΜΙΚΟ' },  
+                            { label: 'Βαρος Κιβ.', value: '6kg' },
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                            { label: 'Στόφα', value: '25 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 15 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Πιτσάκι',
+                        img: './photos/brioche_mini/mz_003.webp',
+                        code: 'ΜΖ-003',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣ ΑΤΟΜΙΚΟ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                            { label: 'Στόφα', value: '30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 12-15 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Πεϊνιρλάκι',
+                        img: './photos/brioche_mini/pei_002.webp',
+                        code: 'ΠΕΙ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΡΙΟΣ ΑΤΟΜΙΚΟ' }, 
+                            { label: 'Βαρος Κιβ.', value: '6kg' }, 
+                            { label: 'Απόψυξη', value: '20 λεπτά' }, 
+                            { label: 'Στόφα', value: '25-30 λεπτά' }, 
+                        ],
+                        baking: '180 βαθμούς για 12-15 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+                
+                'ΜΠΟΥΓΑΤΣΕΣ': [
+                    { 
+                        name: 'Μπουγάτσα Κρέμα',
+                        img: './photos/mpougatses/mkr_001.webp',
+                        code: 'ΜΚΡ-001',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΟΥΓΑΤΣΕΣ' },   
+                            { label: 'Απόψυξη', value: '20 λεπτά' },  
+                        ],
+                        baking: '180 βαθμούς για 15 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                    { 
+                        name: 'Μπουγάτσα Τυρί',
+                        img: './photos/mpougatses/mkr_002.webp',
+                        code: 'ΜΚΡ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΜΠΟΥΓΑΤΣΕΣ' },   
+                            { label: 'Απόψυξη', value: '20 λεπτά' },  
+                        ],
+                        baking: '180 βαθμούς για 12-15 λεπτά',
+                        preparation: 'Τοποθετούμε το προϊόν σε λαδωμένη λαμαρίνα ή λαμαρίνα με αντικολλητικό χαρτί, σε απόσταση μεταξύ τους. Αλείφουμε τα προϊοντα με αυγό και ψήνουμε σε προθερμασμένο φούρνο.',
+                    },
+                ],
+
+                'ΚΡΟΥΑΣΑΝ': [
+                    { 
+                        name: 'Κρουασάν Ατομικό',
+                        img: './photos/krouasan/krb_001.webp',
+                        code: 'ΚΡΒ-001',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΡΟΥΑΣΑΝ' },   
+                            { label: 'Απόψυξη', value: '20 λεπτά' },  
+                        ],
+                        baking: '170-180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε τα κρουασάν σε απόσταση μεταξύ τους, έτσι ώστε όταν φουσκώσουν να μην κολλήσουν και τελικά "καθίσουν".',
+                    },
+                    { 
+                        name: 'Κρουασάν Μίνι',
+                        img: './photos/krouasan/krb_002.webp',
+                        code: 'ΚΡΒ-002',
+                        details: [
+                            { label: 'Κατηγορία', value: 'ΚΡΟΥΑΣΑΝ' },   
+                            { label: 'Απόψυξη', value: '20 λεπτά' },  
+                        ],
+                        baking: '170-180 βαθμούς για 20 λεπτά',
+                        preparation: 'Τοποθετούμε τα κρουασάν σε απόσταση μεταξύ τους, έτσι ώστε όταν φουσκώσουν να μην κολλήσουν και τελικά "καθίσουν".',
+                    },
+                ],
+            };
+
+            let activeCat = Object.keys(menuData)[0];
+            let searchQuery = '';
+            let currentItem = null;
+
+            // ── RENDER TABS ──────────────────────────────────────────────────────────
+            function renderCatTabs() {
+                const $t = $('#catTabs').empty();
+                Object.keys(menuData).forEach(cat => {
+                    $t.append($(`<button class="cat-tab${cat === activeCat ? ' active' : ''}" data-cat="${cat}">${cat}</button>`));
+                });
+            }
+
+            // ── RENDER GRID ──────────────────────────────────────────────────────────
+            function renderItems() {
+                let items = menuData[activeCat] || [];
+               if (searchQuery) {
+                    const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                    const q = normalize(searchQuery);
+                    items = items.filter(i => normalize(i.name).includes(q));
+                }
+                const $c = $('#menuContent').empty();
+                const $s = $('<div class="menu-section">');
+                $s.append(`<div class="section-title">${activeCat}</div>`);
+                if (!items.length) {
+                    $s.append('<div class="empty-msg">No items found.</div>');
+                } else {
+                    const $grid = $('<div class="item-grid">');
+                    items.forEach((item, index) => { 
+                        $grid.append(`
+          <div class="item-cell" data-id="${activeCat.replace(' ', '')+'_'+index}">
+            <img class="item-thumb" src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.style.opacity=.15">
+            <div class="item-cell-body">
+              <div class="item-cell-name">${item.name}</div>
+            </div>
+          </div>`);
+                    });
+                    $s.append($grid);
+                }
+                $c.append($s);
+            }
+
+            // ── OPEN DETAIL SHEET ────────────────────────────────────────────────────
+            function openDetail(id) {
+                const item = findItem(id); if (!item) return;
+                currentItem = item;
+
+                $('#detailImg').attr('src', item.img).attr('alt', item.name);
+                $('#detailTitle').text(item.name);
+                $('#detailCode').html(`<strong>Κωδικός είδους:</strong>&nbsp;${item.code}`);
+
+                // Small info boxes (row 1)
+                const $row = $('#infoBoxesRow').empty();
+                item.details.forEach(d => {
+                    $row.append(`<div class="info-box"><strong>${d.label}:</strong> ${d.value}</div>`);
+                });
+
+                // Wide boxes (baking + preparation)
+                const $wide = $('#wideBoxes').empty();
+                $wide.append(`<div class="info-box-wide"><strong>Ψήσιμο:</strong>&nbsp; ${item.baking}</div>`);
+                $wide.append(`<div class="info-box-wide"><strong>Προετοιμασία:</strong>&nbsp; ${item.preparation}</div>`);
+
+                $('#detailSheet').addClass('open');
+                $('body').css('overflow', 'hidden');
+            }
+
+            function closeDetail() {
+                const $sheet = $('#sheetInner');
+                $sheet.css('transform', '');
+                $('#detailSheet').css('background', '').removeClass('open');
+                $('body').css('overflow', '');
+            }
+
+            function findItem(id) {
+                for (const k in menuData) {  
+                    const f = menuData[k].find((item, index) => k.replace(' ', '')+'_'+index === id);
+                    if (f) return f; 
+                } 
+                return null;
+            }
+
+            // ── EVENTS ───────────────────────────────────────────────────────────────
+            $(document).on('click', '.cat-tab', function () {
+                activeCat = $(this).data('cat');
+                $('.cat-tab').removeClass('active');
+                $(this).addClass('active');
+                renderItems();
+            });
+
+            $(document).on('click', '.item-cell', function () {
+                openDetail($(this).data('id'));
+            });
+
+            $('#detailClose').on('click', closeDetail);
+            $('#detailSheet').on('click', function (e) {
+                if ($(e.target).is('#detailSheet')) closeDetail();
+            });
+
+            // ── SWIPE TO CLOSE ────────────────────────────────────────────────────────
+            (function () {
+                const $sheet = $('#sheetInner');
+                const $handle = $('.sheet-handle');
+                const DISMISS = 120; // px down to trigger close
+                let startY = 0, currentY = 0, dragging = false;
+
+                function onStart(y) {
+                    dragging = true;
+                    startY = y;
+                    currentY = 0;
+                    $sheet.css('transition', 'none');
+                }
+
+                function onMove(y) {
+                    if (!dragging) return;
+                    const delta = Math.max(0, y - startY); // only downward
+                    currentY = delta;
+                    $sheet.css('transform', `translateY(${delta}px)`);
+                    // fade overlay with drag
+                    const ratio = Math.min(delta / 300, 1);
+                    $('#detailSheet').css('background', `rgba(0,0,0,${0.45 * (1 - ratio * 0.6)}`);
+                }
+
+                function onEnd() {
+                    if (!dragging) return;
+                    dragging = false;
+                    $sheet.css('transition', '');
+                    if (currentY >= DISMISS) {
+                        // animate out then close
+                        $sheet.css('transform', `translateY(100vh)`);
+                        setTimeout(closeDetail, 280);
+                    } else {
+                        // snap back
+                        $sheet.css('transform', '');
+                        $('#detailSheet').css('background', '');
+                    }
+                }
+
+                // Touch
+                $handle.on('touchstart', function (e) {
+                    onStart(e.originalEvent.touches[0].clientY);
+                });
+                $(document).on('touchmove', function (e) {
+                    if (!dragging) return;
+                    onMove(e.originalEvent.touches[0].clientY);
+                });
+                $(document).on('touchend touchcancel', onEnd);
+
+                // Mouse (desktop)
+                $handle.on('mousedown', function (e) {
+                    e.preventDefault();
+                    onStart(e.clientY);
+                });
+                $(document).on('mousemove', function (e) {
+                    if (!dragging) return;
+                    onMove(e.clientY);
+                });
+                $(document).on('mouseup', onEnd);
+            })();
+            // ─────────────────────────────────────────────────────────────────────────
+  
+            $('#searchInput').on('input', function () {
+                searchQuery = $(this).val().trim();
+                renderItems();
+            });
+
+            renderCatTabs();
+            renderItems();
+        });
+    </script>
+</body>
+
+</html>
