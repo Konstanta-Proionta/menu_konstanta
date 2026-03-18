@@ -1957,34 +1957,171 @@
             });
             // ─────────────────────────────────────────────────────────────────────────
  
-            // ── IMAGE LIGHTBOX ────────────────────────────────────────────────────────
-           (function () {
+           // ── IMAGE LIGHTBOX ────────────────────────────────────────────────────────
+            (function () {
                 const overlay = $('<div>').css({
                     position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)',
                     zIndex: 9999, display: 'none', alignItems: 'center',
-                    justifyContent: 'center', cursor: 'zoom-out'
+                    justifyContent: 'center', overflow: 'hidden'
                 });
-
+            
                 const img = $('<img>').css({
                     maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain',
-                    touchAction: 'pinch-zoom', userSelect: 'none'
+                    userSelect: 'none', transformOrigin: '0 0',
+                    transition: 'none'
                 });
-
+            
                 overlay.append(img).appendTo('body');
-
+            
+                let scale = 1, posX = 0, posY = 0;
+                let lastDist = 0, lastMidX = 0, lastMidY = 0;
+                let isDragging = false, dragStartX = 0, dragStartY = 0, dragOriginX = 0, dragOriginY = 0;
+            
+                function applyTransform() {
+                    img.css('transform', `translate(${posX}px, ${posY}px) scale(${scale})`);
+                }
+            
+                function resetTransform() {
+                    scale = 1; posX = 0; posY = 0;
+                    applyTransform();
+                }
+            
+                function getDist(t) {
+                    const dx = t[0].clientX - t[1].clientX;
+                    const dy = t[0].clientY - t[1].clientY;
+                    return Math.sqrt(dx * dx + dy * dy);
+                }
+            
+                function getMid(t) {
+                    return {
+                        x: (t[0].clientX + t[1].clientX) / 2,
+                        y: (t[0].clientY + t[1].clientY) / 2
+                    };
+                }
+            
+                // Touch events
+                overlay[0].addEventListener('touchstart', function (e) {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        lastDist = getDist(e.touches);
+                        const mid = getMid(e.touches);
+                        lastMidX = mid.x;
+                        lastMidY = mid.y;
+                        isDragging = false;
+                    } else if (e.touches.length === 1) {
+                        isDragging = true;
+                        dragStartX = e.touches[0].clientX;
+                        dragStartY = e.touches[0].clientY;
+                        dragOriginX = posX;
+                        dragOriginY = posY;
+                    }
+                }, { passive: false });
+            
+                overlay[0].addEventListener('touchmove', function (e) {
+                    e.preventDefault();
+                    if (e.touches.length === 2) {
+                        isDragging = false;
+                        const dist = getDist(e.touches);
+                        const mid = getMid(e.touches);
+                        const scaleChange = dist / lastDist;
+                        const newScale = Math.min(Math.max(scale * scaleChange, 1), 5);
+            
+                        // Zoom toward pinch midpoint
+                        posX = mid.x - (mid.x - posX) * (newScale / scale);
+                        posY = mid.y - (mid.y - posY) * (newScale / scale);
+                        scale = newScale;
+            
+                        lastDist = dist;
+                        lastMidX = mid.x;
+                        lastMidY = mid.y;
+                        applyTransform();
+                    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+                        posX = dragOriginX + (e.touches[0].clientX - dragStartX);
+                        posY = dragOriginY + (e.touches[0].clientY - dragStartY);
+                        applyTransform();
+                    }
+                }, { passive: false });
+            
+                overlay[0].addEventListener('touchend', function (e) {
+                    if (e.touches.length === 0 && scale <= 1) {
+                        // Single tap to close only if not zoomed
+                        const dx = Math.abs((e.changedTouches[0]?.clientX || 0) - dragStartX);
+                        const dy = Math.abs((e.changedTouches[0]?.clientY || 0) - dragStartY);
+                        if (dx < 5 && dy < 5) {
+                            overlay.css('display', 'none');
+                            $('body').css('overflow', '');
+                            resetTransform();
+                        }
+                    }
+                }, { passive: false });
+            
+                // Double tap to reset zoom
+                let lastTap = 0;
+                overlay[0].addEventListener('touchend', function (e) {
+                    const now = Date.now();
+                    if (now - lastTap < 300) {
+                        resetTransform();
+                    }
+                    lastTap = now;
+                });
+            
+                // Mouse events (desktop)
+                overlay[0].addEventListener('wheel', function (e) {
+                    e.preventDefault();
+                    const scaleChange = e.deltaY < 0 ? 1.1 : 0.9;
+                    const newScale = Math.min(Math.max(scale * scaleChange, 1), 5);
+                    posX = e.clientX - (e.clientX - posX) * (newScale / scale);
+                    posY = e.clientY - (e.clientY - posY) * (newScale / scale);
+                    scale = newScale;
+                    applyTransform();
+                }, { passive: false });
+            
+                let mouseDown = false, mouseStartX = 0, mouseStartY = 0, mouseOriginX = 0, mouseOriginY = 0;
+            
+                overlay[0].addEventListener('mousedown', function (e) {
+                    if (scale > 1) {
+                        mouseDown = true;
+                        mouseStartX = e.clientX;
+                        mouseStartY = e.clientY;
+                        mouseOriginX = posX;
+                        mouseOriginY = posY;
+                        overlay.css('cursor', 'grabbing');
+                    }
+                });
+            
+                overlay[0].addEventListener('mousemove', function (e) {
+                    if (!mouseDown) return;
+                    posX = mouseOriginX + (e.clientX - mouseStartX);
+                    posY = mouseOriginY + (e.clientY - mouseStartY);
+                    applyTransform();
+                });
+            
+                overlay[0].addEventListener('mouseup', function (e) {
+                    const dx = Math.abs(e.clientX - mouseStartX);
+                    const dy = Math.abs(e.clientY - mouseStartY);
+                    mouseDown = false;
+                    overlay.css('cursor', scale > 1 ? 'grab' : 'zoom-out');
+                    if (dx < 5 && dy < 5 && scale <= 1) {
+                        overlay.css('display', 'none');
+                        $('body').css('overflow', '');
+                        resetTransform();
+                    }
+                });
+            
+                // Open
                 $(document).on('click', '.detail-img', function () {
                     img.attr('src', $(this).attr('src'));
-                    overlay.css('display', 'flex');
+                    resetTransform();
+                    overlay.css({ display: 'flex', cursor: 'zoom-out' });
                     $('body').css('overflow', 'hidden');
                 });
-
-                overlay.on('click', function () {
-                    overlay.css('display', 'none');
-                    $('body').css('overflow', '');
-                });
-
+            
                 $(document).on('keydown', function (e) {
-                    if (e.key === 'Escape') overlay.css('display', 'none');
+                    if (e.key === 'Escape') {
+                        overlay.css('display', 'none');
+                        $('body').css('overflow', '');
+                        resetTransform();
+                    }
                 });
             })();
 
