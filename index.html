@@ -2041,16 +2041,10 @@
                 }
             
                 function clampPos() {
-                    const iw = img[0].naturalWidth;
-                    const ih = img[0].naturalHeight;
                     const vw = window.innerWidth;
                     const vh = window.innerHeight;
-                    const displayW = Math.min(iw, vw * 0.95);
-                    const displayH = Math.min(ih, vh * 0.95);
-                    const scaledW = displayW * scale;
-                    const scaledH = displayH * scale;
-                    const maxX = Math.max(0, (scaledW - vw) / 2);
-                    const maxY = Math.max(0, (scaledH - vh) / 2);
+                    const maxX = vw * scale;
+                    const maxY = vh * scale;
                     posX = Math.max(-maxX, Math.min(maxX, posX));
                     posY = Math.max(-maxY, Math.min(maxY, posY));
                 }
@@ -2119,15 +2113,13 @@
             
                         posX = initPosX + originX * (1 - scaleRatio) + (mid.x - initMidX);
                         posY = initPosY + originY * (1 - scaleRatio) + (mid.y - initMidY);
-                        scale = newScale;
-                        clampPos();
+                        scale = newScale; 
                         applyTransform(false);
             
                     } else if (e.touches.length === 1 && panning && !pinching) {
                         if (scale > 1) {
                             posX = panOriginX + (e.touches[0].clientX - panStartX);
-                            posY = panOriginY + (e.touches[0].clientY - panStartY);
-                            clampPos();
+                            posY = panOriginY + (e.touches[0].clientY - panStartY); 
                             applyTransform(false);
                         }
                     }
@@ -2193,8 +2185,7 @@
                 overlay[0].addEventListener('mousemove', function (e) {
                     if (!mouseDown || scale <= 1) return;
                     posX = mouseOriginX + (e.clientX - mouseStartX);
-                    posY = mouseOriginY + (e.clientY - mouseStartY);
-                    clampPos();
+                    posY = mouseOriginY + (e.clientY - mouseStartY); 
                     applyTransform(false);
                 });
             
