@@ -1994,7 +1994,7 @@
                 let tapStartX = 0, tapStartY = 0, tapStartTime = 0;
                 let lastTapTime = 0;
             
-                function applyTransform() {
+                function applyTransform(animate) {
                     img.css({
                         transition: animate ? 'transform 0.25s ease' : 'none',
                         transform: scale === 1 && posX === 0 && posY === 0 
