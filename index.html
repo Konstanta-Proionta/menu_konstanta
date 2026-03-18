@@ -1994,16 +1994,23 @@
                 let tapStartX = 0, tapStartY = 0, tapStartTime = 0;
                 let lastTapTime = 0;
             
-                function applyTransform(animate) {
+                function applyTransform() {
                     img.css({
                         transition: animate ? 'transform 0.25s ease' : 'none',
-                        transform: `translate(${posX}px, ${posY}px) scale(${scale})`
+                        transform: scale === 1 && posX === 0 && posY === 0 
+                            ? 'none' 
+                            : `translate(${posX}px, ${posY}px) scale(${scale})`
                     });
                 }
-            
+
                 function resetTransform(animate) {
                     scale = 1; posX = 0; posY = 0;
-                    applyTransform(animate);
+                    if (animate) {
+                        img.css({ transition: 'transform 0.25s ease', transform: 'none' });
+                        setTimeout(() => img.css({ transition: 'none', transform: 'none', willChange: 'auto' }), 260);
+                    } else {
+                        img.css({ transition: 'none', transform: 'none', willChange: 'auto' });
+                    }
                 }
             
                 function clampPos() {
