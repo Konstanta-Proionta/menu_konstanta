@@ -358,6 +358,8 @@
 
         /* Detail hero image */
         .detail-img {
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
             width: 100%;
             height: 28vh;
             object-fit: cover;
@@ -1769,35 +1771,41 @@
                     $t.append($(`<button class="cat-tab${cat === activeCat ? ' active' : ''}" data-cat="${cat}">${cat}</button>`));
                 });
             }
+            // ─────────────────────────────────────────────────────────────────────────
+
 
             // ── RENDER GRID ──────────────────────────────────────────────────────────
             function renderItems() {
-                let items = menuData[activeCat] || [];
-               if (searchQuery) {
-                    const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-                    const q = normalize(searchQuery);
-                    items = items.filter(i => normalize(i.name).includes(q));
-                }
                 const $c = $('#menuContent').empty();
-                const $s = $('<div class="menu-section">');
-                $s.append(`<div class="section-title">${activeCat}</div>`);
-                if (!items.length) {
-                    $s.append('<div class="empty-msg">No items found.</div>');
-                } else {
-                    const $grid = $('<div class="item-grid">');
-                    items.forEach((item, index) => { 
-                        $grid.append(`
-          <div class="item-cell" data-id="${activeCat.replace(' ', '')+'_'+index}">
-            <img class="item-thumb" src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.style.opacity=.15">
-            <div class="item-cell-body">
-              <div class="item-cell-name">${item.name}</div>
-            </div>
-          </div>`);
-                    });
-                    $s.append($grid);
-                }
-                $c.append($s);
+                Object.keys(menuData).forEach(cat => {
+                    let items = menuData[cat] || [];
+                    if (searchQuery) {
+                        const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                        const q = normalize(searchQuery);
+                        items = items.filter(i => normalize(i.name).includes(q));
+                    }
+                    const $s = $('<div class="menu-section">').attr('data-cat', cat);
+                    $s.append(`<div class="section-title">${cat}</div>`);
+                    if (!items.length) {
+                        $s.append('<div class="empty-msg">No items found.</div>');
+                    } else {
+                        const $grid = $('<div class="item-grid">');
+                        items.forEach((item, index) => {
+                            $grid.append(`
+                                <div class="item-cell" data-id="${cat.replace(/ /g,'_')+'_'+index}">
+                                    <img class="item-thumb" src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.style.opacity=.15">
+                                    <div class="item-cell-body">
+                                        <div class="item-cell-name">${item.name}</div>
+                                    </div>
+                                </div>`);
+                        });
+                        $s.append($grid);
+                    }
+                    $c.append($s);
+                });
             }
+            // ─────────────────────────────────────────────────────────────────────────
+
 
             // ── OPEN DETAIL SHEET ────────────────────────────────────────────────────
             function openDetail(id) {
@@ -1831,19 +1839,25 @@
             }
 
             function findItem(id) {
-                for (const k in menuData) {  
-                    const f = menuData[k].find((item, index) => k.replace(' ', '')+'_'+index === id);
-                    if (f) return f; 
-                } 
+                for (const k in menuData) {
+                    const f = menuData[k].find((item, index) => k.replace(/ /g,'_')+'_'+index === id);
+                    if (f) return f;
+                }
                 return null;
             }
+            // ─────────────────────────────────────────────────────────────────────────
+
 
             // ── EVENTS ───────────────────────────────────────────────────────────────
             $(document).on('click', '.cat-tab', function () {
                 activeCat = $(this).data('cat');
                 $('.cat-tab').removeClass('active');
                 $(this).addClass('active');
-                renderItems();
+                const $target = $(`.menu-section[data-cat="${activeCat}"]`);
+                if ($target.length) {
+                    const stickyHeight = $('.sticky-header').outerHeight();
+                    $('html, body').animate({ scrollTop: $target.offset().top - stickyHeight }, 300);
+                }
             });
 
             $(document).on('click', '.item-cell', function () {
@@ -1854,6 +1868,8 @@
             $('#detailSheet').on('click', function (e) {
                 if ($(e.target).is('#detailSheet')) closeDetail();
             });
+            // ─────────────────────────────────────────────────────────────────────────
+
 
             // ── SWIPE TO CLOSE ────────────────────────────────────────────────────────
             (function () {
@@ -1896,12 +1912,14 @@
 
                 // Touch
                 $handle.on('touchstart', function (e) {
+                    e.stopPropagation();
                     onStart(e.originalEvent.touches[0].clientY);
                 });
-                $(document).on('touchmove', function (e) {
+                document.addEventListener('touchmove', function (e) {
                     if (!dragging) return;
-                    onMove(e.originalEvent.touches[0].clientY);
-                });
+                    e.preventDefault();
+                    onMove(e.touches[0].clientY);
+                }, { passive: false });
                 $(document).on('touchend touchcancel', onEnd);
 
                 // Mouse (desktop)
@@ -1917,6 +1935,61 @@
             })();
             // ─────────────────────────────────────────────────────────────────────────
   
+            // ── SCROLL SPY ────────────────────────────────────────────────────────────
+            $(window).on('scroll', function () {
+                const stickyHeight = $('.sticky-header').outerHeight();
+                let current = Object.keys(menuData)[0];
+                $('.menu-section').each(function () {
+                    const top = $(this).offset().top - stickyHeight - 10;
+                    if ($(window).scrollTop() >= top) {
+                        current = $(this).data('cat');
+                    }
+                });
+                if (current !== activeCat) {
+                    activeCat = current;
+                    $('.cat-tab').removeClass('active');
+                    $(`.cat-tab[data-cat="${activeCat}"]`).addClass('active');
+                    // scroll the active tab into view in the tab bar
+                    const $activeTab = $(`.cat-tab[data-cat="${activeCat}"]`);
+                    const $tabs = $('#catTabs');
+                    $tabs.animate({ scrollLeft: $activeTab.position().left + $tabs.scrollLeft() - 16 }, 200);
+                }
+            });
+            // ─────────────────────────────────────────────────────────────────────────
+ 
+            // ── IMAGE LIGHTBOX ────────────────────────────────────────────────────────
+           (function () {
+                const overlay = $('<div>').css({
+                    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)',
+                    zIndex: 9999, display: 'none', alignItems: 'center',
+                    justifyContent: 'center', cursor: 'zoom-out'
+                });
+
+                const img = $('<img>').css({
+                    maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain',
+                    touchAction: 'pinch-zoom', userSelect: 'none'
+                });
+
+                overlay.append(img).appendTo('body');
+
+                $(document).on('click', '.detail-img', function () {
+                    img.attr('src', $(this).attr('src'));
+                    overlay.css('display', 'flex');
+                    $('body').css('overflow', 'hidden');
+                });
+
+                overlay.on('click', function () {
+                    overlay.css('display', 'none');
+                    $('body').css('overflow', '');
+                });
+
+                $(document).on('keydown', function (e) {
+                    if (e.key === 'Escape') overlay.css('display', 'none');
+                });
+            })();
+
+            // ─────────────────────────────────────────────────────────────────────────
+
             $('#searchInput').on('input', function () {
                 searchQuery = $(this).val().trim();
                 renderItems();
