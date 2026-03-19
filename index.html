@@ -360,7 +360,7 @@
 
         /* Detail hero image */
         .detail-img {
-            cursor: zoom-in;
+            cursor: default;
             transition: transform 0.3s ease;
             width: 100%;
             height: 28vh;
@@ -2043,15 +2043,7 @@
                 function dist(a, b) {
                     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
                 }
-
-                // open
-                $(document).on('click', '.detail-img', function () {
-                    $img.attr('src', $(this).attr('src'));
-                    reset(false);
-                    $overlay.css('display', 'flex');
-                    $('body').css('overflow', 'hidden');
-                });
-
+  
                 // close on ESC
                 $(document).on('keydown', function (e) {
                     if (e.key === 'Escape') close();
@@ -2191,6 +2183,85 @@
                     if (scale === 1) { tx = 0; ty = 0; }
                     setTransform(false);
                 }, { passive: false });
+            })();
+
+            // Pinch zoom on detail image in sheet
+            (function () {
+                const sheetEl = document.getElementById('sheetInner');
+                let imgEl = null;
+                let scale = 1, tx = 0, ty = 0;
+                let pinchStartDist = 0, pinchStartScale = 1;
+                let pinchStartTx = 0, pinchStartTy = 0;
+                let touch1 = null, touch2 = null;
+            
+                function dist(a, b) {
+                    return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+                }
+            
+                function setTransform(animated) {
+                    if (!imgEl) return;
+                    imgEl.style.transition = animated ? 'transform 0.2s ease' : 'none';
+                    imgEl.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+                }
+            
+                function reset(animated) {
+                    scale = 1; tx = 0; ty = 0;
+                    setTransform(animated);
+                }
+            
+                sheetEl.addEventListener('touchstart', function (e) {
+                    imgEl = sheetEl.querySelector('.detail-img');
+                    if (e.touches.length === 2) {
+                        touch1 = { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+                        touch2 = { clientX: e.touches[1].clientX, clientY: e.touches[1].clientY };
+                        pinchStartDist = dist(touch1, touch2);
+                        pinchStartScale = scale;
+                        pinchStartTx = tx;
+                        pinchStartTy = ty;
+                        e.preventDefault();
+                    } else if (e.touches.length === 1 && scale > 1) {
+                        touch1 = { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+                        touch2 = null;
+                        pinchStartTx = tx;
+                        pinchStartTy = ty;
+                    }
+                }, { passive: false });
+            
+                sheetEl.addEventListener('touchmove', function (e) {
+                    if (e.touches.length === 2) {
+                        const t1 = e.touches[0];
+                        const t2 = e.touches[1];
+                        const currentDist = dist(t1, t2);
+                        scale = Math.min(Math.max(pinchStartScale * (currentDist / pinchStartDist), 1), 5);
+            
+                        const startMidX = (touch1.clientX + touch2.clientX) / 2;
+                        const startMidY = (touch1.clientY + touch2.clientY) / 2;
+                        const currentMidX = (t1.clientX + t2.clientX) / 2;
+                        const currentMidY = (t1.clientY + t2.clientY) / 2;
+                        tx = pinchStartTx + (currentMidX - startMidX);
+                        ty = pinchStartTy + (currentMidY - startMidY);
+                        setTransform(false);
+                        e.preventDefault();
+                    } else if (e.touches.length === 1 && scale > 1 && touch1) {
+                        tx = pinchStartTx + (e.touches[0].clientX - touch1.clientX);
+                        ty = pinchStartTy + (e.touches[0].clientY - touch1.clientY);
+                        setTransform(false);
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            
+                sheetEl.addEventListener('touchend', function (e) {
+                    if (e.touches.length === 0) {
+                        touch1 = null; touch2 = null;
+                    } else if (e.touches.length === 1) {
+                        touch2 = null;
+                        touch1 = { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+                        pinchStartTx = tx;
+                        pinchStartTy = ty;
+                    }
+                    // double-tap to reset
+                    if (scale < 1.05) reset(true);
+                });
             })();
             // ─────────────────────────────────────────────────────────────────────────
 
