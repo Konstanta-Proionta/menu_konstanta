@@ -54,6 +54,8 @@
             
             -webkit-user-select: none;
             user-select: none;
+            
+            touch-action: pan-y;
         }
 
         .app {
@@ -2028,7 +2030,13 @@
                     touch1 = null; touch2 = null;
                     isPinching = false;
                 }
-            
+             
+                document.addEventListener('touchstart', function(e) {
+                    if (e.touches.length === 2 && cloneEl) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+               
                 imgEl.addEventListener('touchstart', function(e) {
                     if (e.touches.length === 2) {
                         isPinching = true;
