@@ -1889,8 +1889,9 @@
                 const $handle = $('.sheet-handle, .detail-img');
                 const DISMISS = 120; // px down to trigger close
                 let startY = 0, currentY = 0, dragging = false;
-
-                function onStart(y) {
+                
+                function onStart(y, touchCount) {
+                    if (touchCount > 1) return;
                     dragging = true;
                     startY = y;
                     currentY = 0;
@@ -1925,13 +1926,16 @@
                 // Touch
                 $handle.on('touchstart', function (e) {
                     e.stopPropagation();
-                    onStart(e.originalEvent.touches[0].clientY);
+                    onStart(e.originalEvent.touches[0].clientY, e.originalEvent.touches.length);
                 });
+                
                 document.addEventListener('touchmove', function (e) {
                     if (!dragging) return;
+                    if (e.touches.length > 1) { dragging = false; return; }
                     e.preventDefault();
                     onMove(e.touches[0].clientY);
                 }, { passive: false });
+                
                 $(document).on('touchend touchcancel', onEnd);
 
                 // Mouse (desktop)
