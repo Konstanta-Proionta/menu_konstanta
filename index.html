@@ -1970,70 +1970,62 @@
             // Pinch zoom on detail image in sheet
             (function () {
                 const imgEl = document.getElementById('detailImg');
-                const sheetEl = document.getElementById('sheetInner');
-                const overlayEl = document.getElementById('detailSheet');
                 let scale = 1, tx = 0, ty = 0;
                 let pinchStartDist = 0, pinchStartScale = 1;
                 let pinchStartTx = 0, pinchStartTy = 0;
                 let pinchOriginX = 0, pinchOriginY = 0;
                 let touch1 = null, touch2 = null;
                 let isPinching = false;
-                let placeholder = null;
-                let imgRect = null;
+                let overlay = null;
+                let cloneEl = null;
             
                 function dist(a, b) {
                     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
                 }
             
                 function setTransform(animated) {
-                    imgEl.style.transition = animated ? 'transform 0.25s ease' : 'none';
-                    imgEl.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+                    cloneEl.style.transition = animated ? 'transform 0.25s ease' : 'none';
+                    cloneEl.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
                 }
             
                 function enterFullscreen(t1, t2) {
-                    imgRect = imgEl.getBoundingClientRect();
+                    const rect = imgEl.getBoundingClientRect();
             
-                    placeholder = document.createElement('div');
-                    placeholder.style.width = imgRect.width + 'px';
-                    placeholder.style.height = imgRect.height + 'px';
-                    placeholder.style.flexShrink = '0';
-                    imgEl.parentNode.insertBefore(placeholder, imgEl);
+                    // create dark overlay
+                    overlay = document.createElement('div');
+                    overlay.style.cssText = `
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(0,0,0,0.85);
+                        z-index: 9998;
+                    `;
+                    document.body.appendChild(overlay);
             
-                    sheetEl.style.overflow = 'visible';
-                    overlayEl.style.overflow = 'visible';
+                    // create clone positioned exactly over the original image
+                    cloneEl = document.createElement('img');
+                    cloneEl.src = imgEl.src;
+                    cloneEl.style.cssText = `
+                        position: fixed;
+                        top: ${rect.top}px;
+                        left: ${rect.left}px;
+                        width: ${rect.width}px;
+                        height: ${rect.height}px;
+                        object-fit: cover;
+                        z-index: 9999;
+                        margin: 0;
+                        transform-origin: 0 0;
+                        touch-action: none;
+                    `;
+                    document.body.appendChild(cloneEl);
             
-                    imgEl.style.position = 'fixed';
-                    imgEl.style.top = imgRect.top + 'px';
-                    imgEl.style.left = imgRect.left + 'px';
-                    imgEl.style.width = imgRect.width + 'px';
-                    imgEl.style.height = imgRect.height + 'px';
-                    imgEl.style.margin = '0';
-                    imgEl.style.zIndex = '9999';
-                    imgEl.style.transformOrigin = '0 0';
-            
-                    // pinch midpoint relative to image top-left
-                    pinchOriginX = ((t1.clientX + t2.clientX) / 2) - imgRect.left;
-                    pinchOriginY = ((t1.clientY + t2.clientY) / 2) - imgRect.top;
+                    // pinch origin relative to clone top-left
+                    pinchOriginX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+                    pinchOriginY = ((t1.clientY + t2.clientY) / 2) - rect.top;
                 }
             
                 function exitFullscreen() {
-                    imgEl.style.position = '';
-                    imgEl.style.top = '';
-                    imgEl.style.left = '';
-                    imgEl.style.width = '';
-                    imgEl.style.height = '';
-                    imgEl.style.margin = '';
-                    imgEl.style.zIndex = '';
-                    imgEl.style.transition = '';
-                    imgEl.style.transform = '';
-                    imgEl.style.transformOrigin = '';
-                    sheetEl.style.overflow = '';
-                    overlayEl.style.overflow = '';
-                    if (placeholder && placeholder.parentNode) {
-                        placeholder.parentNode.removeChild(placeholder);
-                    }
-                    placeholder = null;
-                    imgRect = null;
+                    if (overlay) { document.body.removeChild(overlay); overlay = null; }
+                    if (cloneEl) { document.body.removeChild(cloneEl); cloneEl = null; }
                     scale = 1; tx = 0; ty = 0;
                 }
             
@@ -2042,14 +2034,14 @@
                         isPinching = true;
                         touch1 = { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
                         touch2 = { clientX: e.touches[1].clientX, clientY: e.touches[1].clientY };
-                        if (scale === 1) enterFullscreen(touch1, touch2);
+                        if (!cloneEl) enterFullscreen(touch1, touch2);
                         pinchStartDist = dist(touch1, touch2);
                         pinchStartScale = scale;
                         pinchStartTx = tx;
                         pinchStartTy = ty;
                         e.preventDefault();
                         e.stopPropagation();
-                    } else if (e.touches.length === 1 && scale > 1) {
+                    } else if (e.touches.length === 1 && cloneEl && scale > 1) {
                         touch1 = { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
                         touch2 = null;
                         pinchStartTx = tx;
@@ -2060,16 +2052,16 @@
                 }, { passive: false });
             
                 imgEl.addEventListener('touchmove', function (e) {
+                    if (!cloneEl) return;
                     if (e.touches.length === 2 && isPinching) {
                         const t1 = e.touches[0];
                         const t2 = e.touches[1];
                         const currentDist = dist(t1, t2);
                         const newScale = Math.min(Math.max(pinchStartScale * (currentDist / pinchStartDist), 1), 5);
             
-                        // zoom from pinch origin point
                         const scaleRatio = newScale / pinchStartScale;
-                        tx = pinchOriginX - scaleRatio * (pinchOriginX - pinchStartTx);
-                        ty = pinchOriginY - scaleRatio * (pinchOriginY - pinchStartTy);
+                        tx = pinchOriginX * (1 - scaleRatio) + pinchStartTx * scaleRatio / pinchStartScale * pinchStartScale;
+                        ty = pinchOriginY * (1 - scaleRatio) + pinchStartTy * scaleRatio / pinchStartScale * pinchStartScale;
                         scale = newScale;
             
                         setTransform(false);
@@ -2089,9 +2081,13 @@
                         isPinching = false;
                         touch1 = null;
                         touch2 = null;
-                        imgEl.style.transition = 'transform 0.25s ease';
-                        imgEl.style.transform = 'translate(0,0) scale(1)';
-                        setTimeout(exitFullscreen, 260);
+                        if (cloneEl) {
+                            cloneEl.style.transition = 'transform 0.25s ease';
+                            cloneEl.style.transform = 'translate(0,0) scale(1)';
+                            overlay.style.transition = 'opacity 0.25s ease';
+                            overlay.style.opacity = '0';
+                            setTimeout(exitFullscreen, 260);
+                        }
                     } else if (e.touches.length === 1) {
                         isPinching = false;
                         touch2 = null;
