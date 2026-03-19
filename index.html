@@ -2054,8 +2054,16 @@
                         const currentDist = dist(t1, t2);
                         const newScale = Math.min(Math.max(pinchStartScale * (currentDist / pinchStartDist), 1), 5);
                         const scaleRatio = newScale / pinchStartScale;
-                        tx = pinchOriginX * (1 - scaleRatio) + pinchStartTx;
-                        ty = pinchOriginY * (1 - scaleRatio) + pinchStartTy;
+            
+                        // current midpoint of the two fingers
+                        const currentMidX = (t1.clientX + t2.clientX) / 2;
+                        const currentMidY = (t1.clientY + t2.clientY) / 2;
+                        // original midpoint when pinch started
+                        const startMidX = (touch1.clientX + touch2.clientX) / 2;
+                        const startMidY = (touch1.clientY + touch2.clientY) / 2;
+            
+                        tx = pinchOriginX * (1 - scaleRatio) + pinchStartTx + (currentMidX - startMidX);
+                        ty = pinchOriginY * (1 - scaleRatio) + pinchStartTy + (currentMidY - startMidY);
                         scale = newScale;
                         setTransform(false);
                         e.preventDefault();
