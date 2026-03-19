@@ -21,10 +21,21 @@
     <meta property="fb:app_id" content="0" />
     
     <link rel="icon" type="image/png" href="https://konstanta-proionta.github.io/menu_konstanta/logo.webp" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    <script>
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+        
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+    </script>
+        
     <style>
         *,
         *::before,
@@ -2011,19 +2022,7 @@
                 let isPinching = false;
                 let overlay = null;
                 let cloneEl = null;
-               
-                document.getElementById('sheetInner').addEventListener('touchmove', function(e) {
-                    if (e.touches.length > 1) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-               
-               document.getElementById('sheetInner').addEventListener('touchstart', function(e) {
-                    if (e.touches.length > 1 && e.target !== imgEl) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-               
+                 
                 function dist(a, b) {
                     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
                 }
@@ -2075,18 +2074,6 @@
                     isPinching = false;
                     document.getElementById('sheetInner').style.pointerEvents = '';
                 }
-             
-                document.addEventListener('touchstart', function(e) {
-                    if (e.touches.length > 1) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-                
-                document.addEventListener('touchmove', function(e) {
-                    if (e.touches.length > 1) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
                
                 imgEl.addEventListener('touchstart', function(e) {
                     if (e.touches.length === 2) {
