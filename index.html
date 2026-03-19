@@ -311,7 +311,7 @@
 
         .sheet-overlay.open {
             display: flex;
-            overflow: visible;
+            touch-action: none;
         }
 
         .sheet {
@@ -1830,17 +1830,18 @@
                 const $wide = $('#wideBoxes').empty();
                 $wide.append(`<div class="info-box-wide"><strong>Ψήσιμο:</strong>&nbsp; ${item.baking}</div>`);
                 $wide.append(`<div class="info-box-wide"><strong>Προετοιμασία:</strong>&nbsp; ${item.preparation}</div>`);
-
+                
                 $('#detailSheet').addClass('open');
                 $('body').css('overflow', 'hidden');
+                $('.app').css('overflow', 'hidden');
             }
 
-           function closeDetail() {
+          function closeDetail() {
                 const $sheet = $('#sheetInner');
                 $sheet.css('transform', '');
                 $('#detailSheet').css('background', '').removeClass('open');
                 $('body').css('overflow', '');
-                // reset pinch zoom on close
+                $('.app').css('overflow', '');
                 const img = document.getElementById('detailImg');
                 if (img) { img.style.transition = 'none'; img.style.transform = ''; }
             }
