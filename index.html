@@ -33,11 +33,7 @@
             margin: 0;
             padding: 0; 
         }
-        
-        * {
-            touch-action: pan-x pan-y;
-        }
-        
+          
         #detailImg {
             touch-action: none;
         }
@@ -51,11 +47,11 @@
             --mid-gray: #9a9490;
             --border: #e5e0d8;
             --accent: #c0392b;
-        }
+        } 
         
-        html {
-            touch-action: pan-x pan-y;
-            -ms-touch-action: pan-x pan-y;
+        html, body {
+            touch-action: pan-y;
+            overflow-x: hidden;
         }
         
         body {
@@ -66,9 +62,7 @@
             min-height: 100vh;
             
             -webkit-user-select: none;
-            user-select: none;
-            
-            touch-action: pan-y;
+            user-select: none; 
         }
 
         .app {
@@ -2082,14 +2076,14 @@
                     document.getElementById('sheetInner').style.pointerEvents = '';
                 }
              
-               document.addEventListener('touchstart', function(e) {
-                    if (e.touches.length > 1 && e.target !== imgEl) {
+                document.addEventListener('touchstart', function(e) {
+                    if (e.touches.length > 1) {
                         e.preventDefault();
                     }
                 }, { passive: false });
-            
+                
                 document.addEventListener('touchmove', function(e) {
-                    if (e.touches.length > 1 && e.target !== imgEl && !cloneEl) {
+                    if (e.touches.length > 1) {
                         e.preventDefault();
                     }
                 }, { passive: false });
