@@ -1977,7 +1977,7 @@
                 let pinchStartTx = 0, pinchStartTy = 0;
                 let touch1 = null, touch2 = null;
                 let isPinching = false;
-                let savedRect = null;
+                let placeholder = null;
             
                 function dist(a, b) {
                     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -1989,20 +1989,27 @@
                 }
             
                 function enterFullscreen() {
-                    savedRect = imgEl.getBoundingClientRect();
-                    // disable clipping on parent elements
+                    const rect = imgEl.getBoundingClientRect();
+            
+                    // insert invisible placeholder so sheet layout doesn't collapse
+                    placeholder = document.createElement('div');
+                    placeholder.style.width = rect.width + 'px';
+                    placeholder.style.height = rect.height + 'px';
+                    placeholder.style.flexShrink = '0';
+                    imgEl.parentNode.insertBefore(placeholder, imgEl);
+            
+                    // disable clipping
                     sheetEl.style.overflow = 'visible';
                     overlayEl.style.overflow = 'visible';
-                    overlayEl.style.backdropFilter = 'none';
-                    // lock image in place on screen using fixed positioning
+            
+                    // lock image over its exact screen position
                     imgEl.style.position = 'fixed';
-                    imgEl.style.top = savedRect.top + 'px';
-                    imgEl.style.left = savedRect.left + 'px';
-                    imgEl.style.width = savedRect.width + 'px';
-                    imgEl.style.height = savedRect.height + 'px';
-                    imgEl.style.zIndex = '9999';
-                    imgEl.style.objectFit = 'contain';
+                    imgEl.style.top = rect.top + 'px';
+                    imgEl.style.left = rect.left + 'px';
+                    imgEl.style.width = rect.width + 'px';
+                    imgEl.style.height = rect.height + 'px';
                     imgEl.style.margin = '0';
+                    imgEl.style.zIndex = '9999';
                     imgEl.style.transformOrigin = 'center center';
                 }
             
@@ -2012,17 +2019,18 @@
                     imgEl.style.left = '';
                     imgEl.style.width = '';
                     imgEl.style.height = '';
-                    imgEl.style.zIndex = '';
-                    imgEl.style.objectFit = '';
                     imgEl.style.margin = '';
+                    imgEl.style.zIndex = '';
                     imgEl.style.transition = '';
                     imgEl.style.transform = '';
                     imgEl.style.transformOrigin = '';
                     sheetEl.style.overflow = '';
                     overlayEl.style.overflow = '';
-                    overlayEl.style.backdropFilter = '';
+                    if (placeholder && placeholder.parentNode) {
+                        placeholder.parentNode.removeChild(placeholder);
+                    }
+                    placeholder = null;
                     scale = 1; tx = 0; ty = 0;
-                    savedRect = null;
                 }
             
                 imgEl.addEventListener('touchstart', function (e) {
