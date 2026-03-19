@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Konstanta</title> 
     
     <!-- Open Graph basics -->
@@ -52,7 +52,12 @@
             --border: #e5e0d8;
             --accent: #c0392b;
         }
-
+        
+        html {
+            touch-action: pan-x pan-y;
+            -ms-touch-action: pan-x pan-y;
+        }
+        
         body {
             font-family: sans-serif;
             background: #e8e4de;
@@ -548,7 +553,23 @@
 
     <script>
         $(function () {
-
+            // force reset any browser zoom
+            document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
+            document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
+            document.addEventListener('gestureend', function(e) { e.preventDefault(); }, { passive: false });
+            
+            // reset zoom if it somehow happens
+            window.addEventListener('resize', function() {
+                if (window.visualViewport) {
+                    window.visualViewport.addEventListener('resize', function() {
+                        if (window.visualViewport.scale !== 1) {
+                            document.querySelector('meta[name=viewport]').setAttribute('content',
+                                'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                        }
+                    });
+                }
+            });
+                        
             const menuData = {
                 'ΚΟΥΡΟΥ': [
                     {
