@@ -41,8 +41,7 @@
             touch-action: none;
         }
    
-        :root {
-            touch-action: pan-x pan-y;
+        :root { 
             height: 100%;
             --cream: #faf8f4;
             --dark: #1a1a1a;
@@ -54,8 +53,7 @@
             --accent: #c0392b;
         } 
         
-        html, body {
-            touch-action: pan-y;
+        html, body { 
             overflow-x: hidden;
         }
         
@@ -484,21 +482,7 @@
             background: var(--border);
             margin: 1.8vh 0;
         }
-
-        /* Disable pinch zoom everywhere */
-        html {
-            touch-action: pan-x pan-y; 
-            -ms-touch-action: pan-x pan-y;
-        }
-        
-        body, .app, .sticky-header, .item-grid, .sheet-overlay {
-            touch-action: pan-x pan-y;
-        }
-        
-        /* Only the detail image allows pinch */
-        #detailImg {
-            touch-action: none;
-        } 
+ 
     </style>
 </head>
 
@@ -562,30 +546,7 @@
     </div>
 
     <script>
-        $(function () { 
-            // Block pinch zoom everywhere except #detailImg — capture phase beats stopPropagation
-            window.addEventListener('touchstart', function(e) {
-                if (e.touches.length > 1 && !e.target.closest('#detailImg')) {
-                    e.preventDefault();
-                }
-            }, { passive: false, capture: true });
-            
-            window.addEventListener('touchmove', function(e) {
-                if (e.touches.length > 1 && !e.target.closest('#detailImg')) {
-                    e.preventDefault();
-                }
-            }, { passive: false, capture: true });
-            
-            // Block double-tap zoom everywhere except #detailImg
-            let lastTap = 0;
-            window.addEventListener('touchend', function(e) {
-                if (e.target.closest('#detailImg')) return;
-                const now = Date.now();
-                if (now - lastTap < 300) e.preventDefault();
-                lastTap = now;
-            }, { passive: false, capture: true });
-                         
-                        
+        $(function () {  
             const menuData = {
                 'ΚΟΥΡΟΥ': [
                     {
