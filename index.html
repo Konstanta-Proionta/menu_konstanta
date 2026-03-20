@@ -2048,11 +2048,7 @@
                     if (cloneEl) {
                         cloneEl.style.transition = 'transform 0.25s ease';
                         cloneEl.style.transform = 'translate(0,0) scale(1)';
-                    }
-                    if (overlay) {
-                        overlay.style.transition = 'opacity 0.25s ease';
-                        overlay.style.opacity = '0';
-                    }
+                    } 
                     setTimeout(function() {
                         if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
                         if (cloneEl && cloneEl.parentNode) cloneEl.parentNode.removeChild(cloneEl);
