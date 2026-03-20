@@ -1935,14 +1935,14 @@
 
                 // Touch
                 $handle.on('touchstart', function (e) {
-                    if (e.originalEvent.touches.length > 1) return; // let pinch zoom through
-                    e.stopPropagation();
+                    if (e.originalEvent.touches.length > 1) return;
+                    if (sharedIsPinching) return;
                     onStart(e.originalEvent.touches[0].clientY, 1);
                 });
                 
                 document.addEventListener('touchmove', function (e) {
-                    if (!dragging || sharedIsPinching) return;
-                    if (e.touches.length > 1) { dragging = false; return; }
+                    if (!dragging) return;
+                    if (sharedIsPinching || e.touches.length > 1) { dragging = false; return; }
                     e.preventDefault();
                     onMove(e.touches[0].clientY);
                 }, { passive: false });
@@ -2064,6 +2064,8 @@
                         imgRect = null;
                         isPinching = false;
                         sharedIsPinching = false;
+                        $('#sheetInner').css('transform', '');
+                        dragging = false;
                         document.getElementById('sheetInner').style.pointerEvents = '';
                     }, 260);
                 }
