@@ -2099,7 +2099,7 @@
                     startMidX = mid.x;
                     startMidY = mid.y;
             
-                }, { passive: false, capture: true });
+                }, { passive: false });
             
                 document.addEventListener('touchmove', function(e) {
                     if (!isPinching || !cloneEl) return;
@@ -2119,7 +2119,7 @@
             
                     applyTransform();
             
-                }, { passive: false, capture: true });
+                }, { passive: false });
             
                 document.addEventListener('touchend', function(e) {
                     if (!cloneEl) return;
@@ -2138,12 +2138,12 @@
                         startTy = currentTy;
                     }
                 
-                }, { passive: false, capture: true });
+                }, { passive: false });
                 
                 document.addEventListener('touchcancel', function(e) {
                     if (!cloneEl && !isPinching) return;
                     cleanup();
-                }, { passive: false, capture: true });
+                }, { passive: false });
             
             })();
             // ─────────────────────────────────────────────────────────────────────────
