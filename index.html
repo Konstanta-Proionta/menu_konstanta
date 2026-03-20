@@ -2125,14 +2125,8 @@
                     e.preventDefault();
                     e.stopImmediatePropagation(); 
                 
-                    if (e.touches.length === 0) {
-                        cleanup();
-                    } else if (e.touches.length === 1) {
-                        isPinching = false;
-                        sharedIsPinching = false;
-                        startScale = currentScale;
-                        startTx = currentTx;
-                        startTy = currentTy;
+                    if (e.touches.length !== 2) {
+                        cleanup(); 
                     }
                 
                 }, { passive: false, capture: true });
